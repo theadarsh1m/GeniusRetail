@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ShoppingCart } from "lucide-react"
 import { mockCartItems, type Product } from "@/lib/mock-data"
 import { Separator } from "@/components/ui/separator"
-import Image from "next/image"
+import { DynamicProductImage } from "./dynamic-product-image"
 
 export function CartSheet() {
   const [items, setItems] = useState(mockCartItems)
@@ -35,13 +35,12 @@ export function CartSheet() {
               {items.map(item => (
                 <div key={item.product.id} className="mt-4">
                   <div className="flex items-center gap-4">
-                    <Image
-                      src={item.product.image}
+                    <DynamicProductImage
+                      query={item.product.aiHint}
                       alt={item.product.name}
                       width={64}
                       height={64}
                       className="rounded-md object-cover"
-                      data-ai-hint={item.product.aiHint}
                     />
                     <div className="flex-1">
                       <p className="font-semibold">{item.product.name}</p>

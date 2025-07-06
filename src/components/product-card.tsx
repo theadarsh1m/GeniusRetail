@@ -1,14 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { Product } from "@/lib/mock-data";
 import { products } from "@/lib/mock-data";
-import { ShoppingCart, Sparkles } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { DynamicProductImage } from "./dynamic-product-image";
 
 interface ProductCardProps {
   product: Product;
@@ -45,14 +45,11 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 ease-in-out hover:shadow-lg">
       <CardHeader className="p-0">
-        <div className="relative">
-          <Image
-            src={product.image}
+        <div className="relative group">
+          <DynamicProductImage
+            query={product.aiHint}
             alt={product.name}
-            width={400}
-            height={400}
-            className="object-cover w-full aspect-square"
-            data-ai-hint={product.aiHint}
+            className="object-cover w-full aspect-square group-hover:scale-105"
           />
           {product.deal && <Badge variant="accent" className="absolute top-2 left-2">{product.deal}</Badge>}
           {product.tags.includes("new") && <Badge className="absolute top-2 right-2">New</Badge>}
