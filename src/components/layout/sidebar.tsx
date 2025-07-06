@@ -17,8 +17,8 @@ import {
   Sparkles,
   Shield,
   LayoutGrid,
-  ShoppingCart,
   Settings,
+  Wand2,
 } from "lucide-react";
 
 const navItems = [
@@ -26,6 +26,7 @@ const navItems = [
   { href: "/products", label: "Products", icon: LayoutGrid },
   { href: "/chat", label: "AI Chat", icon: Bot },
   { href: "/recommendations", label: "Recommendations", icon: Sparkles },
+  { href: "/style-advisor", label: "Style Advisor", icon: Wand2 },
   { href: "/admin", label: "Admin Panel", icon: Shield },
 ];
 
