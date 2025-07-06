@@ -20,6 +20,12 @@ export function Header() {
     isListening,
     hasRecognitionSupport,
   } = useSpeechRecognition();
+  
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   useEffect(() => {
     if (text) {
@@ -56,7 +62,7 @@ export function Header() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            {hasRecognitionSupport && (
+            {isClient && hasRecognitionSupport && (
                <Button 
                 type="button"
                 size="icon" 
