@@ -121,7 +121,7 @@ export function FloatingActions() {
             <Button
               size="icon"
               onClick={scrollToTop}
-              className="h-14 w-14 rounded-full bg-white/90 backdrop-blur-sm text-primary hover:bg-white hover:text-primary-hover shadow-xl border border-white/20 transition-all duration-300"
+              className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-white/90 backdrop-blur-sm text-primary hover:bg-white hover:text-primary-hover shadow-xl border border-white/20 transition-all duration-300"
             >
               <ArrowUp className="h-5 w-5" />
             </Button>
