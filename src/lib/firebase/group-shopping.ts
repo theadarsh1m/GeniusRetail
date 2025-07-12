@@ -50,26 +50,26 @@ export async function createGroupCart(owner: User): Promise<string> {
 
 /**
  * Adds a user to an existing group shopping cart.
+ * This function attempts a write directly, as security rules prevent non-members from reading.
+ * The `arrayUnion` operation is idempotent and will not add duplicates.
  */
 export async function joinGroupCart(cartId: string, user: User): Promise<void> {
-  const groupCartRef = doc(db, "groupCarts", cartId);
-  const groupCartSnap = await getDoc(groupCartRef);
-
-  if (!groupCartSnap.exists()) {
-    throw new Error("Group cart not found");
+  if (!user || !user.id) {
+    throw new Error("A valid user with an ID is required to join a group cart.");
   }
+  const groupCartRef = doc(db, "groupCarts", cartId);
+  const plainUser = { id: user.id, name: user.name };
 
-  const groupCartData = groupCartSnap.data() as GroupCart;
-  const isMember = groupCartData.members.some(m => m.id === user.id);
-
-  if (!isMember) {
-    // Ensure user is a plain object for Firestore
-    const plainUser = { id: user.id, name: user.name };
+  try {
     await updateDoc(groupCartRef, {
       members: arrayUnion(plainUser),
-      memberIds: arrayUnion(user.id), // Also add to the memberIds list
+      memberIds: arrayUnion(user.id),
     });
-    console.log(`User ${user.name} joined group cart ${cartId}`);
+    console.log(`User ${user.name} successfully joined or was already in group cart ${cartId}`);
+  } catch (error) {
+    console.error(`Failed to join group cart ${cartId}:`, error);
+    // Rethrow a more user-friendly error
+    throw new Error("Failed to join the group. The invite link may be invalid or expired.");
   }
 }
 
