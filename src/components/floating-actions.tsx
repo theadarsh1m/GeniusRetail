@@ -73,7 +73,7 @@ export function FloatingActions() {
                   <Button
                     size="icon"
                     className={cn(
-                      "h-12 w-12 rounded-full shadow-xl text-white transition-all duration-300",
+                      "h-10 w-10 sm:h-12 sm:w-12 rounded-full shadow-xl text-white transition-all duration-300",
                       button.color,
                     )}
                   >
