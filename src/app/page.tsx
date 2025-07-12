@@ -490,7 +490,10 @@ export default function Home() {
             variants={containerVariants}
           >
             {inspiredByYourVisit.map((product, index) => (
-              <motion.div key={product.id} variants={itemVariants}>
+              <motion.div
+                key={`inspired-${product.id}`}
+                variants={itemVariants}
+              >
                 <ProductCard product={product as Product} />
               </motion.div>
             ))}
