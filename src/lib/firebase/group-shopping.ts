@@ -22,6 +22,10 @@ import { mockUser } from "../mock-data";
  * Creates a new group shopping cart in Firestore.
  */
 export async function createGroupCart(owner: User): Promise<string> {
+  if (!owner || !owner.id) {
+    throw new Error("A valid owner with an ID is required to create a group cart.");
+  }
+  
   const groupCartsRef = collection(db, "groupCarts");
   const newGroupCartRef = doc(groupCartsRef);
   const newGroupCart: GroupCart = {
