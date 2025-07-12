@@ -184,7 +184,11 @@ export default function Home() {
               className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold font-headline mb-6 md:mb-8 leading-tight"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+              transition={{
+                duration: 1,
+                ease: [0.4, 0, 0.2, 1] as any,
+                delay: 0.2,
+              }}
             >
               <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent bg-300-percent animate-pulse">
                 Welcome to
