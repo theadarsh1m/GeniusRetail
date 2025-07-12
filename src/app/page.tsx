@@ -171,7 +171,7 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] as any }}
               className="mb-6"
             >
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-white/20 text-sm font-medium text-primary mb-6 shadow-lg">
