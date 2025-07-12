@@ -227,7 +227,11 @@ export default function Home() {
               className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12 md:mb-16 px-4 sm:px-0"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 1 }}
+              transition={{
+                duration: 0.8,
+                ease: [0.4, 0, 0.2, 1] as any,
+                delay: 1,
+              }}
             >
               <motion.div
                 whileHover={{ scale: 1.05 }}
