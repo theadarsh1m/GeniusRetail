@@ -1,14 +1,16 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { Product } from "@/lib/mock-data";
-import { products } from "@/lib/mock-data";
+import type { Product } from "@/lib/types";
 import { ShoppingCart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 import { DynamicProductImage } from "./dynamic-product-image";
+import { useGroupShopping } from "@/context/group-shopping-provider";
+import { addProductToGroupCart } from "@/lib/firebase/group-shopping";
+import { mockUser } from "@/lib/mock-data";
 
 interface ProductCardProps {
   product: Product;
@@ -16,40 +18,42 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { toast } = useToast();
+  const { groupCart } = useGroupShopping();
 
-  const handleAddToCart = () => {
-    // In a real app, you'd dispatch an action to add the item to a global state (e.g., Redux, Zustand)
-    // or make an API call.
-    
-    // Show a confirmation toast
-    toast({
-      title: "Added to Cart!",
-      description: `${product.name} is now in your cart.`,
-    });
-
-    // Show smart bundle suggestions
-    if (product.relatedItems && product.relatedItems.length > 0) {
-      const relatedProduct = products.find(p => p.id === product.relatedItems![0]);
-      if (relatedProduct) {
-        setTimeout(() => {
-          toast({
-            title: "Smart Suggestion",
-            description: `People who bought ${product.name} also bought ${relatedProduct.name}.`,
-            action: <ToastAction altText={`Add ${relatedProduct.name} to cart`}>Add to Cart</ToastAction>,
-          });
-        }, 1000);
+  const handleAddToCart = async () => {
+    if (groupCart) {
+      try {
+        await addProductToGroupCart(groupCart.id, product, mockUser);
+        toast({
+          title: "Added to Group Cart!",
+          description: `${product.name} is now in your group's cart.`,
+        });
+      } catch (error) {
+        console.error("Error adding to group cart:", error);
+        toast({
+          variant: "destructive",
+          title: "Failed to add to group cart.",
+          description: "Please try again.",
+        });
       }
+    } else {
+      // Logic for adding to a personal cart
+      toast({
+        title: "Added to Cart!",
+        description: `${product.name} is now in your cart.`,
+      });
     }
   };
 
   return (
-    <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 ease-in-out hover:shadow-lg">
+    <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 group">
       <CardHeader className="p-0">
-        <div className="relative group">
+        <div className="relative">
           <DynamicProductImage
             query={product.aiHint}
+            fallbackSrc={product.image}
             alt={product.name}
-            className="object-cover w-full aspect-square group-hover:scale-105"
+            className="object-cover w-full aspect-square"
           />
           {product.deal && <Badge variant="accent" className="absolute top-2 left-2">{product.deal}</Badge>}
           {product.tags.includes("new") && <Badge className="absolute top-2 right-2">New</Badge>}

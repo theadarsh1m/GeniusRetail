@@ -1,18 +1,25 @@
+
 "use client"
 
 import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Menu, Search, User, Mic, X } from "lucide-react"
+import { Menu, Search, User, Mic, X, Users } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { CartSheet } from "../cart-sheet"
 import { SidebarTrigger } from "../ui/sidebar"
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition"
 import { cn } from "@/lib/utils"
+import { CreateGroupSheet } from "@/components/create-group-sheet"
+import { useGroupShopping } from "@/context/group-shopping-provider"
+import { GroupCartSheet } from "@/components/group-cart-sheet"
+
 
 export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
+  const { groupCart } = useGroupShopping();
+
   const {
     text,
     startListening,
@@ -42,7 +49,7 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+    <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 shadow-sm">
       <div className="md:hidden">
         <SidebarTrigger />
       </div>
@@ -76,12 +83,21 @@ export function Header() {
             )}
           </div>
         </form>
-        <CartSheet />
+
+        {groupCart ? <GroupCartSheet /> : <CartSheet />}
+        
+        <CreateGroupSheet>
+          <Button variant="outline" size="icon">
+            <Users className="h-5 w-5" />
+            <span className="sr-only">Start Group Shopping</span>
+          </Button>
+        </CreateGroupSheet>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
               <Avatar>
-                <AvatarImage src="https://placehold.co/40x40" alt="User" />
+                <AvatarImage src="https://placehold.co/40x40" alt="User" data-ai-hint="user avatar" />
                 <AvatarFallback>U</AvatarFallback>
               </Avatar>
               <span className="sr-only">Toggle user menu</span>

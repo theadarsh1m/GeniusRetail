@@ -5,6 +5,8 @@ import { AppSidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
+import { GroupShoppingProvider } from '@/context/group-shopping-provider';
+import { GroupShoppingManager } from '@/components/group-shopping-manager';
 
 export const metadata: Metadata = {
   title: 'RetailGeniusAI',
@@ -31,16 +33,19 @@ export default function RootLayout({
         ></link>
       </head>
       <body className={cn('font-body antialiased')}>
-        <SidebarProvider>
-          <div className="flex min-h-screen w-full">
-            <AppSidebar />
-            <div className="flex flex-1 flex-col">
-              <Header />
-              <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
+        <GroupShoppingProvider>
+          <SidebarProvider>
+            <div className="flex min-h-screen w-full">
+              <AppSidebar />
+              <div className="flex flex-1 flex-col">
+                <Header />
+                <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
+              </div>
             </div>
-          </div>
-        </SidebarProvider>
-        <Toaster />
+          </SidebarProvider>
+          <Toaster />
+          <GroupShoppingManager />
+        </GroupShoppingProvider>
       </body>
     </html>
   );

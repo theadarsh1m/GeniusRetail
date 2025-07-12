@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -11,35 +12,45 @@ interface DynamicProductImageProps {
   className?: string;
   width?: number;
   height?: number;
+  fallbackSrc?: string;
 }
 
-const fallbackImage = 'https://placehold.co/400x400.png';
+const placeholderImage = 'https://placehold.co/400x400.png';
 
-export function DynamicProductImage({ query, alt, className, width = 400, height = 400 }: DynamicProductImageProps) {
+export function DynamicProductImage({ query, alt, className, width = 400, height = 400, fallbackSrc }: DynamicProductImageProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!query) {
-      setImageUrl(fallbackImage);
-      return;
-    }
-
+    let isMounted = true;
     const fetchImage = async () => {
       try {
         const response = await fetch(`/api/pexels?query=${encodeURIComponent(query)}`);
         if (!response.ok) {
-          throw new Error('Failed to fetch image');
+          throw new Error('Failed to fetch image from Pexels API');
         }
         const data = await response.json();
-        setImageUrl(data.imageUrl || fallbackImage);
+        if (isMounted) {
+          setImageUrl(data.imageUrl || fallbackSrc || placeholderImage);
+        }
       } catch (error) {
         console.error(`Pexels fetch error for query "${query}":`, error);
-        setImageUrl(fallbackImage);
+        if (isMounted) {
+          setImageUrl(fallbackSrc || placeholderImage);
+        }
       }
     };
 
-    fetchImage();
-  }, [query]);
+    if (query) {
+        fetchImage();
+    } else {
+        setImageUrl(fallbackSrc || placeholderImage);
+    }
+    
+    return () => {
+      isMounted = false;
+    };
+
+  }, [query, fallbackSrc]);
 
   if (!imageUrl) {
     return <Skeleton className={cn("bg-muted", className)} style={{width: `${width}px`, height: `${height}px`}} />;
@@ -55,6 +66,7 @@ export function DynamicProductImage({ query, alt, className, width = 400, height
       data-ai-hint={query}
       loading="lazy"
       onLoad={(e) => e.currentTarget.classList.remove('opacity-0')}
+      onError={() => setImageUrl(fallbackSrc || placeholderImage)}
     />
   );
 }
