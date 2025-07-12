@@ -229,7 +229,7 @@ export function Header() {
                   className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-primary text-xs font-bold"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  key={cartItemCount}
+                  key={`header-cart-${cartItemCount}`}
                   transition={{ type: "spring", stiffness: 500, damping: 15 }}
                 >
                   {cartItemCount}
