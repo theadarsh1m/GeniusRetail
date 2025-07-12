@@ -198,7 +198,11 @@ export default function Home() {
                 className="block bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent"
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 1, ease: "easeOut", delay: 0.6 }}
+                transition={{
+                  duration: 1,
+                  ease: [0.4, 0, 0.2, 1] as any,
+                  delay: 0.6,
+                }}
               >
                 RetailGeniusAI
               </motion.span>
