@@ -377,7 +377,7 @@ export default function Home() {
             variants={containerVariants}
           >
             {(moodSuggestions[mood] || []).map((product, index) => (
-              <motion.div key={product.id} variants={itemVariants}>
+              <motion.div key={`mood-${product.id}`} variants={itemVariants}>
                 <ProductCard product={product as Product} />
               </motion.div>
             ))}
