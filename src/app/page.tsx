@@ -165,7 +165,7 @@ export default function Home() {
           }}
         />
 
-        <div className="container mx-auto relative z-10">
+        <div className="container mx-auto relative z-10 px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -180,7 +180,7 @@ export default function Home() {
             </motion.div>
 
             <motion.h1
-              className="text-5xl md:text-7xl lg:text-8xl font-bold font-headline mb-8 leading-tight"
+              className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold font-headline mb-6 md:mb-8 leading-tight"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
@@ -200,7 +200,7 @@ export default function Home() {
             </motion.h1>
 
             <motion.p
-              className="text-xl md:text-2xl text-muted-foreground mb-12 leading-relaxed"
+              className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 md:mb-12 leading-relaxed px-4 sm:px-0"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut", delay: 0.8 }}
@@ -211,7 +211,7 @@ export default function Home() {
             </motion.p>
 
             <motion.div
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+              className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12 md:mb-16 px-4 sm:px-0"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut", delay: 1 }}
@@ -245,7 +245,7 @@ export default function Home() {
 
             {/* Features Grid */}
             <motion.div
-              className="grid grid-cols-2 md:grid-cols-4 gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 px-4 sm:px-0"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut", delay: 1.2 }}
@@ -253,7 +253,7 @@ export default function Home() {
               {features.map((feature, index) => (
                 <motion.div
                   key={feature.title}
-                  className="group p-6 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/20 hover:bg-white/80 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="group p-4 sm:p-6 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/20 hover:bg-white/80 transition-all duration-300 shadow-lg hover:shadow-xl"
                   whileHover={{ y: -5, scale: 1.02 }}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -279,7 +279,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      <div className="container mx-auto space-y-20 py-12">
+      <div className="container mx-auto space-y-12 md:space-y-20 py-8 md:py-12 px-4 sm:px-6 lg:px-8">
         {/* Mood Selector */}
         <AnimatedSection>
           <motion.div variants={itemVariants}>
@@ -340,7 +340,7 @@ export default function Home() {
             </span>
           </motion.h2>
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
             variants={containerVariants}
           >
             {(moodSuggestions[mood] || []).map((product, index) => (
@@ -363,7 +363,7 @@ export default function Home() {
             </span>
           </motion.h2>
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
             variants={containerVariants}
           >
             {personalPicks.map((product, index) => (
@@ -383,7 +383,7 @@ export default function Home() {
             Top Categories
           </motion.h2>
           <motion.div
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
             variants={containerVariants}
           >
             {topCategories.map((category, index) => (
@@ -428,7 +428,7 @@ export default function Home() {
             </span>
           </motion.h2>
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
             variants={containerVariants}
           >
             {deals.map((product, index) => (
@@ -450,7 +450,7 @@ export default function Home() {
             </span>
           </motion.h2>
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
             variants={containerVariants}
           >
             {inspiredByYourVisit.map((product, index) => (
