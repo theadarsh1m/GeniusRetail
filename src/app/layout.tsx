@@ -1,14 +1,15 @@
-import type { Metadata } from 'next';
-import './globals.css';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { AppSidebar } from '@/components/layout/sidebar';
-import { Header } from '@/components/layout/header';
-import { Toaster } from '@/components/ui/toaster';
-import { cn } from '@/lib/utils';
+import type { Metadata } from "next";
+import "./globals.css";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/layout/sidebar";
+import { Header } from "@/components/layout/header";
+import { Toaster } from "@/components/ui/toaster";
+import { FloatingActions } from "@/components/floating-actions";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: 'RetailGeniusAI',
-  description: 'An AI-powered retail experience by Firebase Studio',
+  title: "RetailGeniusAI",
+  description: "An AI-powered retail experience by Firebase Studio",
 };
 
 export default function RootLayout({
@@ -30,7 +31,7 @@ export default function RootLayout({
           rel="stylesheet"
         ></link>
       </head>
-      <body className={cn('font-body antialiased')}>
+      <body className={cn("font-body antialiased")}>
         <SidebarProvider>
           <div className="flex min-h-screen w-full">
             <AppSidebar />
