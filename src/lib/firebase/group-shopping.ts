@@ -28,10 +28,14 @@ export async function createGroupCart(owner: User): Promise<string> {
   
   const groupCartsRef = collection(db, "groupCarts");
   const newGroupCartRef = doc(groupCartsRef);
+
+  // Ensure owner is a plain object for Firestore
+  const plainOwner = { id: owner.id, name: owner.name };
+
   const newGroupCart: Omit<GroupCart, 'createdAt'> & { createdAt: FieldValue } = {
     id: newGroupCartRef.id,
     ownerId: owner.id,
-    members: [owner],
+    members: [plainOwner],
     cartItems: [],
     createdAt: serverTimestamp(),
   };
@@ -58,8 +62,10 @@ export async function joinGroupCart(cartId: string, user: User): Promise<void> {
   const isMember = groupCartData.members.some(m => m.id === user.id);
 
   if (!isMember) {
+    // Ensure user is a plain object for Firestore
+    const plainUser = { id: user.id, name: user.name };
     await updateDoc(groupCartRef, {
-      members: arrayUnion(user),
+      members: arrayUnion(plainUser),
     });
     console.log(`User ${user.name} joined group cart ${cartId}`);
   }
@@ -70,8 +76,10 @@ export async function joinGroupCart(cartId: string, user: User): Promise<void> {
  */
 export async function leaveGroupCart(cartId: string, user: User): Promise<void> {
     const groupCartRef = doc(db, "groupCarts", cartId);
+    // Ensure user is a plain object for Firestore
+    const plainUser = { id: user.id, name: user.name };
     await updateDoc(groupCartRef, {
-      members: arrayRemove(user),
+      members: arrayRemove(plainUser),
     });
     console.log(`User ${user.name} left group cart ${cartId}`);
 }
