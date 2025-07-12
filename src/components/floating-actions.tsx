@@ -92,9 +92,9 @@ export function FloatingActions() {
           size="icon"
           onClick={() => setIsExpanded(!isExpanded)}
           className={cn(
-            "h-16 w-16 rounded-full shadow-2xl transition-all duration-300",
+            "h-14 w-14 sm:h-16 sm:w-16 rounded-full shadow-2xl transition-all duration-300",
             "bg-gradient-to-r from-primary to-accent hover:from-primary-hover hover:to-accent/90",
-            "text-white border-4 border-white/20",
+            "text-white border-2 sm:border-4 border-white/20",
             isExpanded && "rotate-45",
           )}
         >
