@@ -1,4 +1,5 @@
 
+
 "use server";
 
 import {
@@ -11,7 +12,8 @@ import {
   updateDoc,
   writeBatch,
   FieldValue,
-  serverTimestamp
+  serverTimestamp,
+  runTransaction
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { type User, type GroupCart, type Product, type GroupCartItem } from "@/lib/types";
@@ -91,50 +93,51 @@ export async function leaveGroupCart(cartId: string, user: User): Promise<void> 
 // --- UPDATE CART ITEMS ---
 
 /**
- * Adds a product to the group cart or increments its quantity.
+ * Adds a product to the group cart or increments its quantity using a transaction.
  */
 export async function addProductToGroupCart(cartId: string, product: Product, user: User) {
   const groupCartRef = doc(db, "groupCarts", cartId);
-  const batch = writeBatch(db);
 
-  const groupCartSnap = await getDoc(groupCartRef);
-  if (!groupCartSnap.exists()) {
-    throw new Error("Group cart not found");
-  }
+  try {
+    await runTransaction(db, async (transaction) => {
+      const groupCartSnap = await transaction.get(groupCartRef);
+      if (!groupCartSnap.exists()) {
+        throw new Error("Group cart not found");
+      }
 
-  const groupCartData = groupCartSnap.data() as GroupCart;
-  const existingItemIndex = groupCartData.cartItems.findIndex(item => item.id === product.id);
+      const groupCartData = groupCartSnap.data() as GroupCart;
+      const existingItemIndex = groupCartData.cartItems.findIndex(item => item.id === product.id);
+      let updatedCartItems = [...groupCartData.cartItems];
 
-  if (existingItemIndex > -1) {
-    // Item exists, so we need to update its quantity.
-    const updatedCartItems = [...groupCartData.cartItems];
-    const existingItem = updatedCartItems[existingItemIndex];
-    updatedCartItems[existingItemIndex] = { ...existingItem, quantity: existingItem.quantity + 1 };
-    
-    batch.update(groupCartRef, { cartItems: updatedCartItems });
+      if (existingItemIndex > -1) {
+        // Item exists, so we update its quantity.
+        const existingItem = updatedCartItems[existingItemIndex];
+        updatedCartItems[existingItemIndex] = { ...existingItem, quantity: existingItem.quantity + 1 };
+      } else {
+        // Item does not exist, add it to the array.
+        // Sanitize product data to prevent undefined fields
+        const sanitizedProduct: Product = {
+          ...product,
+          views: product.views ?? 0,
+          wishlistCount: product.wishlistCount ?? 0,
+          timeSpent: product.timeSpent ?? 0,
+          deal: product.deal ?? "",
+          relatedItems: product.relatedItems ?? [],
+        };
 
-  } else {
-    // Item does not exist, add it to the array.
-    // Sanitize product data to prevent undefined fields
-    const sanitizedProduct: Product = {
-      ...product,
-      views: product.views ?? 0,
-      wishlistCount: product.wishlistCount ?? 0,
-      timeSpent: product.timeSpent ?? 0,
-      deal: product.deal ?? "",
-      relatedItems: product.relatedItems ?? [],
-    };
-
-    const newItem: GroupCartItem = {
-      ...sanitizedProduct,
-      quantity: 1,
-      addedBy: user.id,
-    };
-
-    batch.update(groupCartRef, {
-      cartItems: arrayUnion(newItem),
+        const newItem: GroupCartItem = {
+          ...sanitizedProduct,
+          quantity: 1,
+          addedBy: user.id,
+        };
+        updatedCartItems.push(newItem);
+      }
+      
+      transaction.update(groupCartRef, { cartItems: updatedCartItems });
     });
+    console.log(`Product ${product.name} added/updated in cart ${cartId}`);
+  } catch (error) {
+    console.error("Transaction failed: ", error);
+    throw new Error("Could not add product to cart. Please try again.");
   }
-
-  await batch.commit();
 }
