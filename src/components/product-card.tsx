@@ -11,6 +11,7 @@ import { DynamicProductImage } from "./dynamic-product-image";
 import { useGroupShopping } from "@/context/group-shopping-provider";
 import { addProductToGroupCart } from "@/lib/firebase/group-shopping";
 import { mockUser } from "@/lib/mock-data";
+import { TrendingScore, calculateTrendingScore } from "./trending-score";
 
 interface ProductCardProps {
   product: Product;
@@ -19,6 +20,7 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const { toast } = useToast();
   const { groupCart } = useGroupShopping();
+  const trendingScore = calculateTrendingScore(product);
 
   const handleAddToCart = async () => {
     if (groupCart) {
@@ -55,14 +57,20 @@ export function ProductCard({ product }: ProductCardProps) {
             alt={product.name}
             className="object-cover w-full aspect-square"
           />
-          {product.deal && <Badge variant="accent" className="absolute top-2 left-2">{product.deal}</Badge>}
+          <div className="absolute top-2 left-2 flex flex-col gap-2">
+            {product.deal && <Badge variant="accent">{product.deal}</Badge>}
+            {trendingScore > 80 && <Badge variant="destructive" className="animate-pulse">⚡ Hot Pick</Badge>}
+          </div>
           {product.tags.includes("new") && <Badge className="absolute top-2 right-2">New</Badge>}
         </div>
       </CardHeader>
       <CardContent className="p-4 flex-grow">
         <CardTitle className="text-lg font-headline mb-1">{product.name}</CardTitle>
         <CardDescription className="text-sm text-muted-foreground">{product.category}</CardDescription>
-        <p className="font-semibold text-lg mt-2">₹{product.price.toFixed(2)}</p>
+        <div className="flex justify-between items-center mt-2">
+            <p className="font-semibold text-lg">₹{product.price.toFixed(2)}</p>
+            <TrendingScore product={product} />
+        </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">
         <Button className="w-full" onClick={handleAddToCart}>

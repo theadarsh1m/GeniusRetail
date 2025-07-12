@@ -11,6 +11,9 @@ export type Product = {
   relatedItems?: string[];
   deal?: string;
   image: string; // From original API
+  views?: number;
+  wishlistCount?: number;
+  timeSpent?: number; // in minutes
 };
 
 export type CartItem = {
