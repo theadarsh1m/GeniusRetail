@@ -20,7 +20,7 @@ export function Toaster() {
         {toasts.map(function ({ id, title, description, action, ...props }) {
           return (
             <motion.div
-              key={id}
+              key={`motion-${id}`}
               initial={{ opacity: 0, y: 50, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -50, scale: 0.9 }}
@@ -33,7 +33,7 @@ export function Toaster() {
               }}
             >
               <Toast
-                key={id}
+                key={`toast-${id}`}
                 {...props}
                 className="bg-white/95 backdrop-blur-xl border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300"
               >
