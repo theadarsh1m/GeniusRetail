@@ -111,6 +111,7 @@ export function FloatingActions() {
       <AnimatePresence>
         {showScrollTop && (
           <motion.div
+            key="scroll-to-top-button"
             initial={{ opacity: 0, scale: 0, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0, y: 20 }}
