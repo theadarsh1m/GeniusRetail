@@ -140,7 +140,7 @@ export function FeaturedCarousel({
         >
           {products.map((product, index) => (
             <motion.div
-              key={product.id}
+              key={`carousel-${product.id}-${index}`}
               className="flex-shrink-0 px-2 md:px-4"
               style={{ width: `${100 / products.length}%` }}
               initial={{ opacity: 0, scale: 0.9 }}
