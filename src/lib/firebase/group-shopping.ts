@@ -7,14 +7,14 @@ import {
   collection,
   doc,
   getDoc,
-  increment,
   setDoc,
   updateDoc,
   writeBatch,
+  FieldValue,
+  serverTimestamp
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { type User, type GroupCart, type Product, type GroupCartItem } from "@/lib/types";
-import { mockUser } from "../mock-data";
 
 // --- CREATE ---
 
@@ -28,12 +28,12 @@ export async function createGroupCart(owner: User): Promise<string> {
   
   const groupCartsRef = collection(db, "groupCarts");
   const newGroupCartRef = doc(groupCartsRef);
-  const newGroupCart: GroupCart = {
+  const newGroupCart: Omit<GroupCart, 'createdAt'> & { createdAt: FieldValue } = {
     id: newGroupCartRef.id,
     ownerId: owner.id,
     members: [owner],
     cartItems: [],
-    createdAt: new Date(),
+    createdAt: serverTimestamp(),
   };
 
   await setDoc(newGroupCartRef, newGroupCart);
