@@ -62,7 +62,7 @@ export function CartSheet({ children }: CartSheetProps) {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            key={itemCount}
+            key={`cart-badge-${itemCount}`}
             transition={{ type: "spring", stiffness: 500, damping: 15 }}
           >
             {itemCount > 99 ? "99+" : itemCount}
