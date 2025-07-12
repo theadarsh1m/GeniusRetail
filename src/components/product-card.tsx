@@ -353,7 +353,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
                     <Star
-                      key={i}
+                      key={`${product.id}-star-${i}`}
                       className={cn(
                         "h-4 w-4",
                         i < Math.floor(parseFloat(rating))
