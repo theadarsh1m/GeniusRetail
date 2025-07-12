@@ -330,6 +330,18 @@ export default function Home() {
           </motion.div>
         </AnimatedSection>
 
+        {/* Featured Products Carousel */}
+        <AnimatedSection>
+          <motion.div variants={itemVariants}>
+            <FeaturedCarousel
+              title="Today's Best Deals"
+              products={deals}
+              autoPlay={true}
+              autoPlayInterval={4000}
+            />
+          </motion.div>
+        </AnimatedSection>
+
         {/* Mood-based Products */}
         <AnimatedSection>
           <motion.h2
