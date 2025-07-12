@@ -60,12 +60,12 @@ export const useSpeechRecognition = (): SpeechRecognitionHook => {
   useEffect(() => {
     if (!recognition) return;
 
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
+    recognition.onresult = (event: any) => {
       setText(event.results[0][0].transcript);
       setIsListening(false);
     };
 
-    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+    recognition.onerror = (event: any) => {
       console.error("Speech recognition error", event.error);
       let description = "An unknown error occurred with speech recognition.";
 
