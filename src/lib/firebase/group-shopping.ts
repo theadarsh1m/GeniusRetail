@@ -36,6 +36,7 @@ export async function createGroupCart(owner: User): Promise<string> {
     id: newGroupCartRef.id,
     ownerId: owner.id,
     members: [plainOwner],
+    memberIds: [owner.id], // Add owner's ID to the memberIds list
     cartItems: [],
     createdAt: serverTimestamp(),
   };
@@ -66,6 +67,7 @@ export async function joinGroupCart(cartId: string, user: User): Promise<void> {
     const plainUser = { id: user.id, name: user.name };
     await updateDoc(groupCartRef, {
       members: arrayUnion(plainUser),
+      memberIds: arrayUnion(user.id), // Also add to the memberIds list
     });
     console.log(`User ${user.name} joined group cart ${cartId}`);
   }
@@ -80,6 +82,7 @@ export async function leaveGroupCart(cartId: string, user: User): Promise<void> 
     const plainUser = { id: user.id, name: user.name };
     await updateDoc(groupCartRef, {
       members: arrayRemove(plainUser),
+      memberIds: arrayRemove(user.id), // Also remove from the memberIds list
     });
     console.log(`User ${user.name} left group cart ${cartId}`);
 }

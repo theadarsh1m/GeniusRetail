@@ -34,9 +34,10 @@ export type GroupCartItem = Product & {
 };
 
 export type GroupCart = {
-  id: string;
+  id:string;
   ownerId: string;
   members: User[];
+  memberIds: string[]; // For security rules
   cartItems: GroupCartItem[];
   createdAt: any; // Firestore timestamp
 };
