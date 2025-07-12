@@ -18,6 +18,7 @@ export function ChatInterface() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const submissionRef = useRef<boolean>(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
