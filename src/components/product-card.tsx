@@ -73,9 +73,25 @@ export function ProductCard({ product }: ProductCardProps) {
     });
   };
 
-  const stockLevel = Math.floor(Math.random() * 50) + 10;
-  const rating = (Math.random() * 2 + 3).toFixed(1);
-  const reviews = Math.floor(Math.random() * 500) + 50;
+  // Generate consistent values based on product ID to avoid hydration mismatches
+  const generateConsistentValue = (
+    id: string,
+    seed: number,
+    max: number,
+    min: number = 0,
+  ) => {
+    const hash = id.split("").reduce((a, b) => {
+      a = (a << 5) - a + b.charCodeAt(0);
+      return a & a;
+    }, seed);
+    return (Math.abs(hash) % (max - min)) + min;
+  };
+
+  const stockLevel = generateConsistentValue(product.id, 1, 50, 10);
+  const rating = (generateConsistentValue(product.id, 2, 20, 30) / 10).toFixed(
+    1,
+  );
+  const reviews = generateConsistentValue(product.id, 3, 500, 50);
 
   return (
     <motion.div
