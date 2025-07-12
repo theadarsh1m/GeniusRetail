@@ -61,6 +61,7 @@ export function ChatInterface() {
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
+      submissionRef.current = false;
       setTimeout(() => {
         if (scrollAreaRef.current) {
           scrollAreaRef.current.scrollTo({
