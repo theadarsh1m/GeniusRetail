@@ -224,7 +224,7 @@ export default function RecommendationsPage() {
                     <ul className="space-y-2">
                       {recommendations.products.map((product, index) => (
                         <li
-                          key={`recommendation-${index}-${product.name?.slice(0, 10) || index}`}
+                          key={`recommendation-${index}-${typeof product === "string" ? product.slice(0, 10) : index}`}
                         >
                           <Alert>
                             <Sparkles className="h-4 w-4" />
