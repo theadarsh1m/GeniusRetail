@@ -265,7 +265,11 @@ export default function Home() {
               className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 px-4 sm:px-0"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 1.2 }}
+              transition={{
+                duration: 0.8,
+                ease: [0.4, 0, 0.2, 1] as any,
+                delay: 1.2,
+              }}
             >
               {features.map((feature, index) => (
                 <motion.div
