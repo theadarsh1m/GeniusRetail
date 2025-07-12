@@ -4,7 +4,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { recommendProducts, type RecommendProductsOutput } from "@/ai/flows/product-recommendation";
+import {
+  recommendProducts,
+  type RecommendProductsOutput,
+} from "@/ai/flows/product-recommendation";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,8 +19,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Loader2, Sparkles } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
@@ -32,7 +47,8 @@ const formSchema = z.object({
 });
 
 export default function RecommendationsPage() {
-  const [recommendations, setRecommendations] = useState<RecommendProductsOutput | null>(null);
+  const [recommendations, setRecommendations] =
+    useState<RecommendProductsOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -64,7 +80,9 @@ export default function RecommendationsPage() {
   return (
     <div className="container mx-auto space-y-8">
       <div>
-        <h1 className="text-4xl font-bold font-headline">Smart Recommendations</h1>
+        <h1 className="text-4xl font-bold font-headline">
+          Smart Recommendations
+        </h1>
         <p className="text-muted-foreground">
           Let our AI find the perfect products for you based on your needs.
         </p>
@@ -77,7 +95,10 @@ export default function RecommendationsPage() {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
                 <FormField
                   control={form.control}
                   name="preferences"
@@ -85,7 +106,10 @@ export default function RecommendationsPage() {
                     <FormItem>
                       <FormLabel>Preferences</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., comfortable, cotton, brand name" {...field} />
+                        <Input
+                          placeholder="e.g., comfortable, cotton, brand name"
+                          {...field}
+                        />
                       </FormControl>
                       <FormDescription>
                         Any specific features or brands you like?
@@ -117,7 +141,10 @@ export default function RecommendationsPage() {
                     <FormItem>
                       <FormLabel>Style</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., casual, formal, sporty" {...field} />
+                        <Input
+                          placeholder="e.g., casual, formal, sporty"
+                          {...field}
+                        />
                       </FormControl>
                       <FormDescription>
                         Describe your personal style.
@@ -132,7 +159,10 @@ export default function RecommendationsPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Weather</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select weather conditions" />
@@ -159,7 +189,9 @@ export default function RecommendationsPage() {
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Finding Products...
                     </>
-                  ) : "Get Recommendations"}
+                  ) : (
+                    "Get Recommendations"
+                  )}
                 </Button>
               </form>
             </Form>
@@ -176,26 +208,35 @@ export default function RecommendationsPage() {
             </CardHeader>
             <CardContent>
               {isLoading && (
-                 <div className="flex justify-center items-center h-40">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                 </div>
+                <div className="flex justify-center items-center h-40">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
               )}
-              {error && <Alert variant="destructive"><AlertTitle>Error</AlertTitle><AlertDescription>{error}</AlertDescription></Alert>}
+              {error && (
+                <Alert variant="destructive">
+                  <AlertTitle>Error</AlertTitle>
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
               {recommendations && (
                 <div className="space-y-4">
                   {recommendations.products.length > 0 ? (
                     <ul className="space-y-2">
-                        {recommendations.products.map((product, index) => (
-                           <li key={index}>
-                             <Alert>
-                                <Sparkles className="h-4 w-4"/>
-                                <AlertTitle>{product}</AlertTitle>
-                             </Alert>
-                           </li>
-                        ))}
+                      {recommendations.products.map((product, index) => (
+                        <li
+                          key={`recommendation-${index}-${product.name?.slice(0, 10) || index}`}
+                        >
+                          <Alert>
+                            <Sparkles className="h-4 w-4" />
+                            <AlertTitle>{product}</AlertTitle>
+                          </Alert>
+                        </li>
+                      ))}
                     </ul>
                   ) : (
-                    <p className="text-center text-muted-foreground">No specific products found. Try broadening your criteria.</p>
+                    <p className="text-center text-muted-foreground">
+                      No specific products found. Try broadening your criteria.
+                    </p>
                   )}
                 </div>
               )}
