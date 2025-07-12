@@ -23,33 +23,48 @@ export function ChatInterface() {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = { role: "user", content: input };
+    const userQuery = input.trim();
+    const userMessage: Message = { role: "user", content: userQuery };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
 
     try {
-      const response = await chatBasedProductDiscovery({ query: input });
-      const assistantMessage: Message = {
-        role: "assistant",
-        content: response.response,
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
+      // Create a new AbortController for this request
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+      const response = await chatBasedProductDiscovery({ query: userQuery });
+      clearTimeout(timeoutId);
+
+      if (response && response.response) {
+        const assistantMessage: Message = {
+          role: "assistant",
+          content: response.response,
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+      } else {
+        throw new Error("Invalid response from AI service");
+      }
     } catch (error) {
       console.error("Error with AI chat:", error);
       const errorMessage: Message = {
         role: "assistant",
         content:
-          "Sorry, I'm having trouble connecting. Please try again later.",
+          error instanceof Error && error.name === "AbortError"
+            ? "Request timed out. Please try again with a shorter message."
+            : "Sorry, I'm having trouble connecting. Please try again later.",
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
       setTimeout(() => {
-        scrollAreaRef.current?.scrollTo({
-          top: scrollAreaRef.current.scrollHeight,
-          behavior: "smooth",
-        });
+        if (scrollAreaRef.current) {
+          scrollAreaRef.current.scrollTo({
+            top: scrollAreaRef.current.scrollHeight,
+            behavior: "smooth",
+          });
+        }
       }, 100);
     }
   };
