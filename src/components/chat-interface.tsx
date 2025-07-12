@@ -130,10 +130,14 @@ export function ChatInterface() {
           <Button
             type="submit"
             size="icon"
-            disabled={isLoading || !input.trim()}
-            aria-label="Send message"
+            disabled={isLoading || !input.trim() || submissionRef.current}
+            aria-label={isLoading ? "Sending message..." : "Send message"}
           >
-            <CornerDownLeft className="h-5 w-5" />
+            {isLoading ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <CornerDownLeft className="h-5 w-5" />
+            )}
           </Button>
         </form>
       </div>
