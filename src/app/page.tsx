@@ -468,7 +468,7 @@ export default function Home() {
             variants={containerVariants}
           >
             {deals.map((product, index) => (
-              <motion.div key={product.id} variants={itemVariants}>
+              <motion.div key={`deals-${product.id}`} variants={itemVariants}>
                 <ProductCard product={product as Product} />
               </motion.div>
             ))}
