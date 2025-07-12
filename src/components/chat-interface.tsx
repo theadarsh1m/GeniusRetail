@@ -39,13 +39,17 @@ export function ChatInterface() {
       console.error("Error with AI chat:", error);
       const errorMessage: Message = {
         role: "assistant",
-        content: "Sorry, I'm having trouble connecting. Please try again later.",
+        content:
+          "Sorry, I'm having trouble connecting. Please try again later.",
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
       setTimeout(() => {
-        scrollAreaRef.current?.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: 'smooth' });
+        scrollAreaRef.current?.scrollTo({
+          top: scrollAreaRef.current.scrollHeight,
+          behavior: "smooth",
+        });
       }, 100);
     }
   };
@@ -55,10 +59,10 @@ export function ChatInterface() {
       <div ref={scrollAreaRef} className="flex-1 overflow-y-auto p-6 space-y-6">
         {messages.map((message, index) => (
           <div
-            key={index}
+            key={`message-${index}-${message.content.slice(0, 20)}`}
             className={cn(
               "flex items-start gap-4",
-              message.role === "user" ? "justify-end" : "justify-start"
+              message.role === "user" ? "justify-end" : "justify-start",
             )}
           >
             {message.role === "assistant" && (
@@ -71,7 +75,7 @@ export function ChatInterface() {
                 "max-w-md p-3 rounded-lg",
                 message.role === "user"
                   ? "bg-primary text-primary-foreground"
-                  : "bg-muted"
+                  : "bg-muted",
               )}
             >
               <p className="text-sm">{message.content}</p>
@@ -84,14 +88,14 @@ export function ChatInterface() {
           </div>
         ))}
         {isLoading && (
-            <div className="flex items-start gap-4 justify-start">
-                 <Avatar className="h-8 w-8">
-                    <AvatarFallback>AI</AvatarFallback>
-                 </Avatar>
-                <div className="max-w-md p-3 rounded-lg bg-muted flex items-center">
-                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                </div>
+          <div className="flex items-start gap-4 justify-start">
+            <Avatar className="h-8 w-8">
+              <AvatarFallback>AI</AvatarFallback>
+            </Avatar>
+            <div className="max-w-md p-3 rounded-lg bg-muted flex items-center">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
             </div>
+          </div>
         )}
       </div>
 
@@ -104,7 +108,12 @@ export function ChatInterface() {
             className="flex-1"
             disabled={isLoading}
           />
-          <Button type="submit" size="icon" disabled={isLoading || !input.trim()} aria-label="Send message">
+          <Button
+            type="submit"
+            size="icon"
+            disabled={isLoading || !input.trim()}
+            aria-label="Send message"
+          >
             <CornerDownLeft className="h-5 w-5" />
           </Button>
         </form>
