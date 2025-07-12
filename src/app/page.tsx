@@ -400,7 +400,10 @@ export default function Home() {
             variants={containerVariants}
           >
             {personalPicks.map((product, index) => (
-              <motion.div key={product.id} variants={itemVariants}>
+              <motion.div
+                key={`personal-${product.id}`}
+                variants={itemVariants}
+              >
                 <ProductCard product={product as Product} />
               </motion.div>
             ))}
