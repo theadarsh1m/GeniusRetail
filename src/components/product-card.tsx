@@ -242,6 +242,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   )}
                   {product.tags.includes("trending") && (
                     <motion.div
+                      key={`${product.id}-trending-badge`}
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0, opacity: 0 }}
