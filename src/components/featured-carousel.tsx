@@ -178,6 +178,7 @@ export function FeaturedCarousel({
         <AnimatePresence>
           {isAutoPlaying && (
             <motion.div
+              key={`${title}-autoplay-indicator`}
               className="absolute top-4 right-4 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm border border-white/20 text-xs font-medium text-primary shadow-lg"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
