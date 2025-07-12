@@ -22,7 +22,9 @@ export function ChatInterface() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || submissionRef.current) return;
+
+    submissionRef.current = true;
 
     const userQuery = input.trim();
     const userMessage: Message = { role: "user", content: userQuery };
