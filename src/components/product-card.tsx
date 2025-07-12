@@ -223,6 +223,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   )}
                   {product.tags.includes("new") && (
                     <motion.div
+                      key={`${product.id}-new-badge`}
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0, opacity: 0 }}
