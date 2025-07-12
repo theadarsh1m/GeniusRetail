@@ -198,7 +198,7 @@ export function FeaturedCarousel({
       >
         {Array.from({ length: maxIndex + 1 }, (_, index) => (
           <motion.button
-            key={index}
+            key={`${title}-dot-${index}`}
             onClick={() => goToSlide(index)}
             className={cn(
               "w-3 h-3 rounded-full transition-all duration-300",
