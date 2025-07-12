@@ -199,7 +199,7 @@ export function CartSheet({ children }: CartSheetProps) {
                       <span className="text-lg font-semibold">Subtotal</span>
                       <motion.span
                         className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
-                        key={subtotal}
+                        key={`cart-subtotal-${subtotal}`}
                         initial={{ scale: 1.2 }}
                         animate={{ scale: 1 }}
                         transition={{
