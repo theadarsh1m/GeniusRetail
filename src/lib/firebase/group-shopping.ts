@@ -104,7 +104,6 @@ export async function addProductToGroupCart(cartId: string, product: Product, us
 
   if (existingItemIndex > -1) {
     // Item exists, so we need to update its quantity.
-    // Firestore array updates are tricky. We replace the whole array.
     const updatedCartItems = [...groupCartData.cartItems];
     const existingItem = updatedCartItems[existingItemIndex];
     updatedCartItems[existingItemIndex] = { ...existingItem, quantity: existingItem.quantity + 1 };
@@ -113,11 +112,22 @@ export async function addProductToGroupCart(cartId: string, product: Product, us
 
   } else {
     // Item does not exist, add it to the array.
-    const newItem: GroupCartItem = {
+    // Sanitize product data to prevent undefined fields
+    const sanitizedProduct: Product = {
       ...product,
+      views: product.views ?? 0,
+      wishlistCount: product.wishlistCount ?? 0,
+      timeSpent: product.timeSpent ?? 0,
+      deal: product.deal ?? "",
+      relatedItems: product.relatedItems ?? [],
+    };
+
+    const newItem: GroupCartItem = {
+      ...sanitizedProduct,
       quantity: 1,
       addedBy: user.id,
     };
+
     batch.update(groupCartRef, {
       cartItems: arrayUnion(newItem),
     });
