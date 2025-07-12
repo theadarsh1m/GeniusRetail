@@ -42,6 +42,7 @@ export default function RootLayout({
           </div>
         </SidebarProvider>
         <Toaster />
+        <FloatingActions />
       </body>
     </html>
   );
