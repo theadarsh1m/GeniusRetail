@@ -203,6 +203,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 <AnimatePresence>
                   {product.deal && (
                     <motion.div
+                      key={`${product.id}-deal-badge`}
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0, opacity: 0 }}
