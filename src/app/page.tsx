@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { ProductCard } from "@/components/product-card";
+import { FeaturedCarousel } from "@/components/featured-carousel";
 import {
   deals,
   topCategories,
