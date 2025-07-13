@@ -2,11 +2,27 @@
 
 import { useState, useRef, ChangeEvent } from "react";
 import Image from "next/image";
-import { getStyleAdvice, type StyleAdvisorOutput } from "@/ai/flows/style-advisor";
+// Removed server action import - now using API route
+type StyleAdvisorOutput = {
+  facialAnalysis: {
+    gender: string;
+    age: string;
+    faceShape: string;
+    mood: string;
+  };
+  styleAdvice: string;
+  recommendedProductTags: string[];
+};
 import { products, type Product } from "@/lib/mock-data";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -60,7 +76,9 @@ export default function StyleAdvisorPage() {
   };
 
   const recommendedProducts = result
-    ? products.filter(p => result.recommendedProductTags.some(tag => p.tags.includes(tag)))
+    ? products.filter((p) =>
+        result.recommendedProductTags.some((tag) => p.tags.includes(tag)),
+      )
     : [];
 
   return (
@@ -68,7 +86,8 @@ export default function StyleAdvisorPage() {
       <div>
         <h1 className="text-4xl font-bold font-headline">AI Style Advisor</h1>
         <p className="text-muted-foreground">
-          Upload a photo of yourself to get personalized fashion recommendations.
+          Upload a photo of yourself to get personalized fashion
+          recommendations.
         </p>
       </div>
 
@@ -76,12 +95,20 @@ export default function StyleAdvisorPage() {
         <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle>Upload Your Photo</CardTitle>
-            <CardDescription>We'll analyze it to suggest styles for you.</CardDescription>
+            <CardDescription>
+              We'll analyze it to suggest styles for you.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="photo-upload">Choose a file</Label>
-              <Input id="photo-upload" type="file" accept="image/*" onChange={handleFileChange} ref={fileInputRef} />
+              <Input
+                id="photo-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                ref={fileInputRef}
+              />
             </div>
             {previewUrl && (
               <div className="relative aspect-square w-full">
@@ -94,7 +121,11 @@ export default function StyleAdvisorPage() {
                 />
               </div>
             )}
-            <Button onClick={handleAnalyzeClick} disabled={isLoading || !selectedFile} className="w-full">
+            <Button
+              onClick={handleAnalyzeClick}
+              disabled={isLoading || !selectedFile}
+              className="w-full"
+            >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -107,14 +138,19 @@ export default function StyleAdvisorPage() {
                 </>
               )}
             </Button>
-            {error && <Alert variant="destructive"><AlertTitle>Error</AlertTitle><AlertDescription>{error}</AlertDescription></Alert>}
+            {error && (
+              <Alert variant="destructive">
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
           </CardContent>
         </Card>
 
         <div className="lg:col-span-2 space-y-8">
           {isLoading && (
             <div className="flex justify-center items-center h-96">
-                <Loader2 className="h-16 w-16 animate-spin text-primary" />
+              <Loader2 className="h-16 w-16 animate-spin text-primary" />
             </div>
           )}
 
@@ -122,31 +158,43 @@ export default function StyleAdvisorPage() {
             <>
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><User /> Facial Analysis</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <User /> Facial Analysis
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <div className="p-4 bg-muted rounded-lg">
-                        <p className="text-sm text-muted-foreground">Gender</p>
-                        <p className="font-bold text-lg">{result.facialAnalysis.gender}</p>
-                    </div>
-                    <div className="p-4 bg-muted rounded-lg">
-                        <p className="text-sm text-muted-foreground">Age</p>
-                        <p className="font-bold text-lg">{result.facialAnalysis.age}</p>
-                    </div>
-                    <div className="p-4 bg-muted rounded-lg">
-                        <p className="text-sm text-muted-foreground">Face Shape</p>
-                        <p className="font-bold text-lg">{result.facialAnalysis.faceShape}</p>
-                    </div>
-                    <div className="p-4 bg-muted rounded-lg">
-                        <p className="text-sm text-muted-foreground">Mood</p>
-                        <p className="font-bold text-lg">{result.facialAnalysis.mood}</p>
-                    </div>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground">Gender</p>
+                    <p className="font-bold text-lg">
+                      {result.facialAnalysis.gender}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground">Age</p>
+                    <p className="font-bold text-lg">
+                      {result.facialAnalysis.age}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground">Face Shape</p>
+                    <p className="font-bold text-lg">
+                      {result.facialAnalysis.faceShape}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground">Mood</p>
+                    <p className="font-bold text-lg">
+                      {result.facialAnalysis.mood}
+                    </p>
+                  </div>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><Palette /> Your Style Profile</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <Palette /> Your Style Profile
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">{result.styleAdvice}</p>
@@ -154,18 +202,23 @@ export default function StyleAdvisorPage() {
               </Card>
 
               <div>
-                <h3 className="text-2xl font-bold font-headline mb-4 flex items-center gap-2"><Sparkles /> Recommended For You</h3>
+                <h3 className="text-2xl font-bold font-headline mb-4 flex items-center gap-2">
+                  <Sparkles /> Recommended For You
+                </h3>
                 {recommendedProducts.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {recommendedProducts.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {recommendedProducts.map((product) => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
                 ) : (
-                    <Alert>
-                        <AlertTitle>No specific products found</AlertTitle>
-                        <AlertDescription>We couldn't find specific products matching your style profile. Please try another photo!</AlertDescription>
-                    </Alert>
+                  <Alert>
+                    <AlertTitle>No specific products found</AlertTitle>
+                    <AlertDescription>
+                      We couldn't find specific products matching your style
+                      profile. Please try another photo!
+                    </AlertDescription>
+                  </Alert>
                 )}
               </div>
             </>
