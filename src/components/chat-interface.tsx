@@ -1,6 +1,6 @@
 "use client";
 
-import { chatBasedProductDiscovery } from "@/ai/flows/chat-based-product-discovery";
+// Removed server action import - now using API route
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
