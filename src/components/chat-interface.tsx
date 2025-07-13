@@ -37,13 +37,27 @@ export function ChatInterface() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-      const response = await chatBasedProductDiscovery({ query: userQuery });
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: userQuery }),
+        signal: controller.signal,
+      });
+
       clearTimeout(timeoutId);
 
-      if (response && response.response) {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data && data.response) {
         const assistantMessage: Message = {
           role: "assistant",
-          content: response.response,
+          content: data.response,
         };
         setMessages((prev) => [...prev, assistantMessage]);
       } else {
