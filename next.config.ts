@@ -8,8 +8,14 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  serverExternalPackages: ["genkit"],
   experimental: {
-    serverComponentsExternalPackages: ["genkit"],
+    serverActions: {
+      allowedOrigins: [
+        "70009d07e8264f33b65bcf721a5e8a18-8a5fa98e28294180a65b9ee7f.fly.dev",
+        "localhost:9002",
+      ],
+    },
   },
   images: {
     remotePatterns: [
