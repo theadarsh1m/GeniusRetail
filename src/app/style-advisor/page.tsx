@@ -65,8 +65,21 @@ export default function StyleAdvisorPage() {
       if (!previewUrl) {
         throw new Error("File could not be read.");
       }
-      const response = await getStyleAdvice({ photoDataUri: previewUrl });
-      setResult(response);
+      const response = await fetch("/api/style-advisor", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ photoDataUri: previewUrl }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to analyze photo");
+      }
+
+      const data = await response.json();
+      setResult(data);
     } catch (err) {
       console.error(err);
       setError("Failed to analyze the photo. Please try another one.");
