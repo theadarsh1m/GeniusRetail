@@ -24,7 +24,7 @@ const OutfitSuggesterInputSchema = z.object({
 
 export type OutfitSuggesterInput = z.infer<typeof OutfitSuggesterInputSchema>;
 
-export const OutfitSuggesterOutputSchema = z.object({
+const OutfitSuggesterOutputSchema = z.object({
   mainItem: z.string().describe('The name and description of the main clothing item identified from the input.'),
   complementary: z
     .array(z.string())
