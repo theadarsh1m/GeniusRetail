@@ -28,6 +28,14 @@ export default function SmartStylistPage() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      if (file.size > 4 * 1024 * 1024) { // 4MB limit
+        toast({
+            variant: 'destructive',
+            title: 'Image Too Large',
+            description: 'Please upload an image smaller than 4MB.',
+        });
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setUploadedImage(reader.result as string);
@@ -48,6 +56,7 @@ export default function SmartStylistPage() {
       } else if (type === 'text' && textDescription) {
         response = await suggestOutfit({ description: textDescription });
       } else {
+        // This case should ideally not be hit due to button disabling
         throw new Error("No input provided.");
       }
       setResult(response);
@@ -94,7 +103,7 @@ export default function SmartStylistPage() {
               <TabsContent value="upload" className="mt-4 space-y-4">
                  <div className="relative aspect-square w-full bg-muted rounded-md overflow-hidden flex items-center justify-center">
                     {uploadedImage ? (
-                        <Image src={uploadedImage} alt="Uploaded for analysis" layout="fill" objectFit="cover" />
+                        <Image src={uploadedImage} alt="Uploaded for analysis" fill={true} objectFit="cover" />
                     ) : (
                         <div className="text-center text-muted-foreground p-4">
                             <Upload className="h-12 w-12 mx-auto mb-2"/>

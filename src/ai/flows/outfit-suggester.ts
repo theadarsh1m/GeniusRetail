@@ -10,11 +10,11 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const OutfitSuggesterInputSchema = z.object({
+const OutfitSuggesterInputSchema = z.object({
   photoDataUri: z
     .string()
     .describe(
-      "A photo of a single fashion item, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+      "A photo of a single fashion item, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'"
     ).optional(),
   description: z.string().describe('A text description of the fashion item.').optional(),
 })
@@ -33,6 +33,8 @@ export const OutfitSuggesterOutputSchema = z.object({
 export type OutfitSuggesterOutput = z.infer<typeof OutfitSuggesterOutputSchema>;
 
 export async function suggestOutfit(input: OutfitSuggesterInput): Promise<OutfitSuggesterOutput> {
+  // The schema is validated here to ensure at least one input is provided.
+  OutfitSuggesterInputSchema.parse(input);
   return outfitSuggesterFlow(input);
 }
 
