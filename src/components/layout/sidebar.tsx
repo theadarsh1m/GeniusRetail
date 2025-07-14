@@ -19,6 +19,7 @@ import {
   LayoutGrid,
   Settings,
   Wand2,
+  Shirt,
 } from "lucide-react";
 
 const navItems = [
@@ -27,6 +28,7 @@ const navItems = [
   { href: "/chat", label: "AI Chat", icon: Bot },
   { href: "/recommendations", label: "Recommendations", icon: Sparkles },
   { href: "/style-advisor", label: "Style Advisor", icon: Wand2 },
+  { href: "/smart-stylist", label: "Smart Stylist", icon: Shirt },
   { href: "/admin", label: "Admin Panel", icon: Shield },
 ];
 
