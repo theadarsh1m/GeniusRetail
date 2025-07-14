@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -9,8 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ProductCard } from "@/components/product-card";
-import { Loader2, Wand2, User, Palette, Sparkles, Camera } from "lucide-react";
+import { Loader2, Wand2, User, Palette, Sparkles, Camera, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
 
 export default function StyleAdvisorPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,146 +21,197 @@ export default function StyleAdvisorPage() {
   const [result, setResult] = useState<StyleAdvisorOutput | null>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     const getCameraPermission = async () => {
+      if (hasCameraPermission !== null) return;
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         setHasCameraPermission(true);
-
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
       } catch (error) {
         console.error('Error accessing camera:', error);
         setHasCameraPermission(false);
-        toast({
-          variant: 'destructive',
-          title: 'Camera Access Denied',
-          description: 'Please enable camera permissions in your browser settings to use this feature.',
-        });
       }
     };
 
     getCameraPermission();
     
     return () => {
-        if (videoRef.current && videoRef.current.srcObject) {
-            const stream = videoRef.current.srcObject as MediaStream;
-            stream.getTracks().forEach(track => track.stop());
-        }
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+      }
     }
-  }, [toast]);
+  }, [hasCameraPermission]);
 
-
-  const handleAnalyzeClick = async () => {
-    if (!videoRef.current || !canvasRef.current) {
-        setError("Camera is not ready. Please wait a moment and try again.");
-        return;
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUploadedImage(reader.result as string);
+        setCapturedImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-    
+  };
+
+  const analyzeImage = async (dataUri: string) => {
     setIsLoading(true);
     setError(null);
     setResult(null);
 
     try {
-        const video = videoRef.current;
-        const canvas = canvasRef.current;
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        
-        const context = canvas.getContext('2d');
-        if (!context) {
-            throw new Error("Could not get canvas context.");
-        }
-        
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const dataUri = canvas.toDataURL('image/jpeg');
-        setCapturedImage(dataUri);
-
       const response = await getStyleAdvice({ photoDataUri: dataUri });
       setResult(response);
     } catch (err) {
       console.error(err);
       setError("Failed to analyze the photo. Please try another one.");
+      toast({
+          variant: 'destructive',
+          title: 'Analysis Failed',
+          description: 'There was an error analyzing your photo. Please ensure it is a clear picture of a face and try again.',
+      });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleCaptureAndAnalyze = async () => {
+    if (!videoRef.current || !canvasRef.current) {
+      setError("Camera is not ready. Please wait a moment and try again.");
+      return;
+    }
+    
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    const context = canvas.getContext('2d');
+    if (!context) {
+      throw new Error("Could not get canvas context.");
+    }
+    
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const dataUri = canvas.toDataURL('image/jpeg');
+    setCapturedImage(dataUri);
+    setUploadedImage(null); // Clear uploaded image if switching
+    analyzeImage(dataUri);
+  };
+
+  const handleUploadAndAnalyze = () => {
+    if (uploadedImage) {
+      analyzeImage(uploadedImage);
+    } else {
+      setError("Please select a file to analyze.");
     }
   };
 
   const recommendedProducts = result
     ? products.filter(p => result.recommendedProductTags.some(tag => p.tags.includes(tag)))
     : [];
+    
+  const triggerFileInput = () => {
+      fileInputRef.current?.click();
+  }
 
   return (
     <div className="container mx-auto space-y-8">
       <div>
         <h1 className="text-4xl font-bold font-headline">AI Style Advisor</h1>
         <p className="text-muted-foreground">
-          Use your camera to get personalized fashion recommendations.
+          Get personalized fashion recommendations from your camera or a photo.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         <Card className="lg:col-span-1">
           <CardHeader>
-            <CardTitle>Your Live Camera</CardTitle>
-            <CardDescription>Position your face in the frame and capture an image.</CardDescription>
+            <CardTitle>Get Your Analysis</CardTitle>
+            <CardDescription>Choose your preferred method below.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="relative aspect-square w-full bg-muted rounded-md overflow-hidden flex items-center justify-center">
-                <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
-                <canvas ref={canvasRef} className="hidden" />
+          <CardContent>
+            <Tabs defaultValue="camera" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="camera">Live Camera</TabsTrigger>
+                <TabsTrigger value="upload">Upload Photo</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="camera" className="mt-4 space-y-4">
+                 <div className="relative aspect-square w-full bg-muted rounded-md overflow-hidden flex items-center justify-center">
+                    <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
+                    <canvas ref={canvasRef} className="hidden" />
 
-                {hasCameraPermission === false && (
-                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
-                        <Camera className="h-12 w-12 text-muted-foreground mb-4" />
-                        <h3 className="font-bold">Camera Access Denied</h3>
-                        <p className="text-sm text-muted-foreground">Please enable camera permissions to use the Style Advisor.</p>
-                     </div>
-                )}
-                 {hasCameraPermission === null && (
-                     <div className="absolute inset-0 flex items-center justify-center">
-                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                     </div>
-                )}
-            </div>
-            
-            <Button onClick={handleAnalyzeClick} disabled={isLoading || !hasCameraPermission} className="w-full">
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Analyzing...
-                </>
-              ) : (
-                <>
-                  <Wand2 className="mr-2 h-4 w-4" />
-                  Capture & Analyze Mood
-                </>
-              )}
-            </Button>
-            {error && <Alert variant="destructive"><AlertTitle>Error</AlertTitle><AlertDescription>{error}</AlertDescription></Alert>}
+                    {hasCameraPermission === false && (
+                         <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+                            <Camera className="h-12 w-12 text-muted-foreground mb-4" />
+                            <h3 className="font-bold">Camera Access Denied</h3>
+                            <p className="text-sm text-muted-foreground">Enable permissions to use this feature, or use the "Upload Photo" tab.</p>
+                         </div>
+                    )}
+                     {hasCameraPermission === null && (
+                         <div className="absolute inset-0 flex items-center justify-center">
+                            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                         </div>
+                    )}
+                 </div>
+                 <Button onClick={handleCaptureAndAnalyze} disabled={isLoading || !hasCameraPermission} className="w-full">
+                   <Wand2 className="mr-2 h-4 w-4" />
+                   Capture & Analyze
+                 </Button>
+              </TabsContent>
+
+              <TabsContent value="upload" className="mt-4 space-y-4">
+                 <div className="relative aspect-square w-full bg-muted rounded-md overflow-hidden flex items-center justify-center">
+                    {uploadedImage ? (
+                        <Image src={uploadedImage} alt="Uploaded for analysis" layout="fill" objectFit="cover" />
+                    ) : (
+                        <div className="text-center text-muted-foreground p-4">
+                            <Upload className="h-12 w-12 mx-auto mb-2"/>
+                            <p>Upload a clear photo of your face.</p>
+                        </div>
+                    )}
+                 </div>
+                 <Input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+                 <Button onClick={triggerFileInput} variant="outline" className="w-full" disabled={isLoading}>
+                    Choose File
+                 </Button>
+                 <Button onClick={handleUploadAndAnalyze} disabled={isLoading || !uploadedImage} className="w-full">
+                   <Sparkles className="mr-2 h-4 w-4" />
+                   Analyze Photo
+                 </Button>
+              </TabsContent>
+            </Tabs>
+            {error && <Alert variant="destructive" className="mt-4"><AlertTitle>Error</AlertTitle><AlertDescription>{error}</AlertDescription></Alert>}
           </CardContent>
         </Card>
 
         <div className="lg:col-span-2 space-y-8">
           {isLoading && (
-            <div className="flex justify-center items-center h-96">
+            <div className="flex flex-col justify-center items-center h-96 rounded-lg border border-dashed">
                 <Loader2 className="h-16 w-16 animate-spin text-primary" />
+                <p className="mt-4 text-muted-foreground">Analyzing your style...</p>
             </div>
           )}
           
           {!result && !isLoading && capturedImage && (
              <Card>
                 <CardHeader>
-                    <CardTitle>Captured Image</CardTitle>
+                    <CardTitle>Image to be Analyzed</CardTitle>
+                    <CardDescription>This is the image we're sending to our AI stylist.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Image src={capturedImage} alt="Captured from webcam" width={400} height={400} className="rounded-md mx-auto" />
+                    <Image src={capturedImage} alt="Captured from webcam" width={400} height={400} className="rounded-md mx-auto aspect-square object-cover" />
                 </CardContent>
              </Card>
           )}
@@ -219,3 +273,5 @@ export default function StyleAdvisorPage() {
     </div>
   );
 }
+
+    
